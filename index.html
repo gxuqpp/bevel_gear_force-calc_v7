@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弧齿 / 双曲面锥齿轮受力计算 · 表5-2</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:18px;background:#a8a49a;color:#111;line-height:1.6}
+.wrap{max-width:1100px;margin:0 auto;padding:14px}
+header{text-align:center;padding:12px 0 16px}
+h1{font-size:22px;font-weight:700;letter-spacing:.02em;line-height:1.4}
+.sub{font-size:16px;color:#333;margin-top:5px;line-height:1.6}
+/* ── 主布局：桌面双列，手机单列 ── */
+.layout{display:grid;grid-template-columns:340px 1fr;gap:14px}
+.card{background:#dedad0;border:1.5px solid #999;border-radius:10px;padding:16px}
+.ct{font-size:16px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:16px;color:#111;margin-bottom:5px;font-weight:700;line-height:1.4}
+input[type=number]{width:100%;padding:10px 12px;border:2px solid #999;border-radius:7px;
+  font-size:18px;color:#111;background:#ccc9be;transition:border .15s;min-height:48px}
+input[type=number]:focus{outline:none;border-color:#444;background:#e8e4d8}
+input[readonly]{background:#b8eedd!important;color:#0a4535!important;cursor:default}
+/* 两列小网格 */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* 类型切换标签 */
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{flex:1;padding:11px 6px;border:2px solid #999;border-radius:7px;cursor:pointer;
+  font-size:17px;font-weight:700;text-align:center;color:#333;background:#ccc9be;transition:all .15s}
+.tab.on{background:#2c2c2a;color:#fff;border-color:#2c2c2a}
+/* 螺旋/旋转方向切换 */
+.trow{display:flex;gap:8px}
+.tog{flex:1;padding:11px 6px;border:2px solid #999;border-radius:7px;cursor:pointer;
+  font-size:17px;font-weight:700;text-align:center;color:#333;background:#ccc9be;transition:all .15s;min-height:48px}
+.tog.on{background:#534AB7;color:#fff;border-color:#534AB7}
+.hr{border:none;border-top:1.5px solid #aaa;margin:14px 0}
+.btn{width:100%;padding:14px;background:#2c2c2a;color:#fff;border:none;border-radius:9px;
+  font-size:18px;font-weight:700;cursor:pointer;letter-spacing:.03em;transition:background .15s;min-height:52px}
+.btn:hover{background:#444}
+.hyp{display:none}
+.hyp.show{display:block}
+
+/* ── 结果区 ── */
+.rs{margin-bottom:16px}
+.rst{font-size:17px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px}
+.sign-box{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;
+  border-radius:7px;font-weight:700;font-size:22px}
+.sign-box.p{background:#a0e8cc;color:#083d2a;border:1.5px solid #40b880}
+.sign-box.m{background:#f0c0a8;color:#6a1c08;border:1.5px solid #c86030}
+.sr{font-size:17px;color:#222;margin-top:6px;line-height:1.9}
+/* 公式框：允许横向滚动 */
+.fml{background:#c8c5b8;border:1.5px solid #aaa;border-radius:7px;padding:12px 16px;
+  font-family:"Courier New",monospace;font-size:15px;color:#1a1a10;line-height:2.1;
+  white-space:pre;overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* 力结果卡片：双列（桌面），单列（手机） */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fc{border-radius:9px;padding:14px 16px;border:1.5px solid #bbb}
+.fc.p{background:#a8ecd8;border-color:#40b880}
+.fc.m{background:#f0c8b8;border-color:#c86030}
+.fc.z{background:#ccc8f5;border-color:#7870c8}
+.fn{font-size:15px;font-weight:700;color:#333;margin-bottom:4px;text-transform:uppercase;line-height:1.4}
+.fv{font-size:24px;font-weight:800}
+.fv.p{color:#083d2a}.fv.m{color:#6a1c08}.fv.z{color:#2c2480}
+.fd{font-size:15px;margin-top:5px;line-height:1.5}
+.fd.p{color:#083d2a}.fd.m{color:#6a1c08}.fd.z{color:#2c2480}
+.dbox{background:#d0cdc0;border:1.5px solid #aaa;border-radius:9px;overflow:hidden}
+.note{font-size:16px;color:#333;line-height:1.8;padding:10px 14px;
+  background:#c8c5b8;border-radius:7px;border:1.5px solid #aaa}
+.ph{text-align:center;padding:50px 20px;color:#555;font-size:18px}
+/* 图例 */
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:16px;color:#222;margin-top:10px}
+.leg-item{display:flex;align-items:center;gap:6px}
+.dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+/* 圆周力计算区 */
+.ft-out{background:#b8cce8;border:1.5px solid #7090c8;border-radius:8px;padding:12px 14px;margin-top:8px}
+.ft-row{display:flex;align-items:baseline;gap:10px;margin-bottom:5px;flex-wrap:wrap}
+.ft-label{font-size:17px;font-weight:700;color:#0a2850;min-width:50px}
+.ft-val{font-size:26px;font-weight:800;color:#0a2850}
+.ft-unit{font-size:17px;color:#2a5090}
+.ft-sub{font-size:16px;color:#2a5090;margin-top:5px;white-space:pre-line;line-height:1.9}
+.syncbtn{margin-top:10px;width:100%;padding:11px;background:#0a2850;color:#fff;border:none;
+  border-radius:7px;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:.02em;min-height:48px}
+.syncbtn:hover{background:#1a4890}
+.ratio-box{background:#e8d890;border:1.5px solid #b89030;border-radius:8px;padding:12px 16px;font-size:16px;color:#3a2800;line-height:2}
+input.out-blue{background:#b8d8f8!important;color:#0a2850!important;font-weight:700;cursor:default}
+
+/* ══════════════════════════════════════════
+   手机端适配（≤ 760px）
+══════════════════════════════════════════ */
+@media(max-width:760px){
+  body{font-size:17px}
+  .wrap{padding:10px}
+  h1{font-size:19px}
+  .sub{font-size:15px}
+
+  /* 主布局变单列 */
+  .layout{grid-template-columns:1fr !important}
+
+  /* 两列小网格变单列 */
+  .row2{grid-template-columns:1fr !important;gap:8px}
+
+  /* 力结果卡片变单列 */
+  .fgrid{grid-template-columns:1fr !important;gap:8px}
+
+  /* JS生成的4列锥角卡片 / 3列圆周力卡片 也覆盖为单列 */
+  [style*="grid-template-columns:repeat(4"],[style*="grid-template-columns:1fr 1fr 1fr"]{
+    grid-template-columns:1fr !important
+  }
+
+  .card{padding:12px 12px}
+  .ct{font-size:15px}
+  .field label{font-size:15px}
+  input[type=number]{font-size:17px;padding:9px 10px}
+  .tab,.tog{font-size:15px;padding:10px 4px}
+  .btn{font-size:17px;padding:13px}
+  .rst{font-size:16px}
+  .sign-box{font-size:19px;padding:7px 14px}
+  .sr{font-size:16px}
+  .fml{font-size:13px;padding:10px 12px}
+  .fn{font-size:14px}
+  .fv{font-size:20px}
+  .fd{font-size:14px}
+  .ft-val{font-size:22px}
+  .ft-label,.ft-unit,.ft-sub{font-size:15px}
+  .syncbtn{font-size:16px}
+  .legend{font-size:15px;gap:10px}
+  .ratio-box{font-size:15px}
+}
+
+@media(max-width:400px){
+  h1{font-size:17px}
+  .fv{font-size:18px}
+}
+
+/* ── JS生成的网格容器 ── */
+.cone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ft-res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px}
+.sign-fml-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+@media(max-width:760px){
+  .cone-grid{grid-template-columns:1fr 1fr !important}
+  .ft-res-grid{grid-template-columns:1fr !important}
+  .sign-fml-grid{grid-template-columns:1fr !important}
+}
+@media(max-width:480px){
+  .cone-grid{grid-template-columns:1fr !important}
+}
+user-select: none
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>弧齿锥齿轮 / 双曲面齿轮 &nbsp;轴向力 &amp; 径向力计算</h1>
+  <div class="sub">《汽车设计》第6版 · 表5-2 · 式5-22（轴向力Fax）· 式5-23（径向力FRx）&nbsp;|&nbsp; 旋转方向统一从<b>大端</b>观察</div>
+</header>
+
+<div class="layout">
+<!-- ===== LEFT: INPUTS ===== -->
+<div class="card">
+  <div class="ct">齿轮类型</div>
+  <div class="tabs">
+    <button class="tab on" onclick="setType('spiral',this)">弧齿锥齿轮</button>
+    <button class="tab" onclick="setType('hypoid',this)">双曲面齿轮</button>
+  </div>
+
+  <div class="ct">几何参数</div>
+
+  <div class="field">
+    <label>圆周力 Ft₁ (N) &nbsp;<span style="color:#bbb;font-weight:400">主动轮分度圆处</span></label>
+    <input type="number" id="ft" value="8000" step="100" min="1">
+  </div>
+
+  <div class="row2">
+    <div class="field">
+      <label>压力角 α (°)</label>
+      <input type="number" id="alpha" value="20" step="0.5" min="14" max="30">
+    </div>
+    <div class="field">
+      <label>主动轮节锥角 δ₁ (°)</label>
+      <input type="number" id="delta1" value="16" step="0.5" min="3" max="87" oninput="syncD2()">
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="field">
+      <label>主动轮螺旋角 β₁ (°)</label>
+      <input type="number" id="beta1" value="35" step="1" min="0" max="65" oninput="calcFt()">
+    </div>
+    <div class="field hyp" id="fb2">
+      <label>从动轮螺旋角 β₂ (°)</label>
+      <input type="number" id="beta2" value="28" step="1" min="0" max="65" oninput="calcFt()">
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="field" id="fd2-auto">
+      <label id="d2lbl" style="color:#0F6E56">从动轮 δ₂ = 90°−δ₁</label>
+      <input type="number" id="delta2" value="74" step="0.5" readonly>
+    </div>
+    <div class="field hyp" id="fd2-hyp-extra" style="display:none">
+      <!-- hypoid: user can override delta2, shown via id=delta2 made editable -->
+    </div>
+  </div>
+
+  <div class="hr"></div>
+  <div class="ct">圆周力计算&nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;color:#888">式5-17 / 5-18</span></div>
+
+  <div class="field">
+    <label>从动齿轮转矩 T (N·m)</label>
+    <input type="number" id="torque" value="500" step="10" min="0.001" oninput="calcFt()">
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>大端分度圆直径 D₂ (mm)</label>
+      <input type="number" id="D2big" value="200" step="1" min="1" oninput="calcFt()">
+    </div>
+    <div class="field">
+      <label>从动轮齿面宽 b₂ (mm)</label>
+      <input type="number" id="b2face" value="35" step="1" min="1" oninput="calcFt()">
+    </div>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label style="color:#0a5c45">节锥角 γ₂ = δ₂ (°) &nbsp;自动</label>
+      <input type="number" id="gamma2" readonly class="out-blue" tabindex="-1">
+    </div>
+    <div class="field">
+      <label style="color:#1a3a6e">中点分度圆 Dm₂ (mm)</label>
+      <input type="number" id="Dm2out" readonly class="out-blue" tabindex="-1">
+    </div>
+  </div>
+
+  <div class="ft-out" id="ftOut">
+    <div class="ft-row">
+      <span class="ft-label">F =</span>
+      <span class="ft-val" id="ftVal">—</span>
+      <span class="ft-unit">N</span>
+    </div>
+    <div class="ft-sub" id="ftSub">F = 2T / Dm₂ &nbsp;（式5-17）</div>
+    <button class="syncbtn" id="syncBtn" onclick="syncFtToInput()">↑ 将 F 同步为主动轮圆周力 Ft₁</button>
+  </div>
+
+  <div class="hr"></div>
+  <div class="ct">齿顶高 &amp; 齿根高&nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;color:#888">Gleason 制，主动轮齿顶高 &gt; 从动轮</span></div>
+  <div class="row2">
+    <div class="field">
+      <label>主动轮齿顶高 ha₁ (mm)</label>
+      <input type="number" id="ha1" value="8.5" step="0.1" min="0" oninput="calcFt()">
+    </div>
+    <div class="field">
+      <label>从动轮齿顶高 ha₂ (mm)</label>
+      <input type="number" id="ha2" value="4.5" step="0.1" min="0" oninput="calcFt()">
+    </div>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>主动轮齿根高 hf₁ (mm)</label>
+      <input type="number" id="hf1" value="5.5" step="0.1" min="0" oninput="calcFt()">
+    </div>
+    <div class="field">
+      <label>从动轮齿根高 hf₂ (mm)</label>
+      <input type="number" id="hf2" value="9.5" step="0.1" min="0" oninput="calcFt()">
+    </div>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label style="color:#1a3a6e">节锥距 R (mm) &nbsp;自动</label>
+      <input type="number" id="Rout" readonly class="out-blue" tabindex="-1">
+    </div>
+    <div class="field"></div>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label style="color:#8a4a00">主动轮面锥角 δa₁ (°) 自动</label>
+      <input type="number" id="da1out" readonly tabindex="-1"
+        style="background:#fff4e0!important;color:#8a4a00!important;font-weight:700;cursor:default;
+               border:1px solid #d4944a;border-radius:6px;width:100%;padding:7px 10px;font-size:15px">
+    </div>
+    <div class="field">
+      <label style="color:#5a006e">从动轮根锥角 δf₂ (°) 自动</label>
+      <input type="number" id="df2out" readonly tabindex="-1"
+        style="background:#f5e0ff!important;color:#5a006e!important;font-weight:700;cursor:default;
+               border:1px solid #a055c0;border-radius:6px;width:100%;padding:7px 10px;font-size:15px">
+    </div>
+  </div>
+
+  <div class="hr"></div>
+  <div class="ct">螺旋 &amp; 旋转方向&nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;color:#aaa">（从大端看）</span></div>
+
+  <div class="field">
+    <label>螺旋方向</label>
+    <div class="trow">
+      <button class="tog" id="tL" onclick="setSp('left')">← 左旋</button>
+      <button class="tog on" id="tR" onclick="setSp('right')">右旋 →</button>
+    </div>
+  </div>
+  <div class="field">
+    <label>旋转方向（从大端看）</label>
+    <div class="trow">
+      <button class="tog on" id="tCW" onclick="setRot('cw')">顺时针 ↻</button>
+      <button class="tog" id="tCCW" onclick="setRot('ccw')">逆时针 ↺</button>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+  <div class="ct">符号约定</div>
+  <div style="font-size:14px;color:#333;line-height:2.1">
+    <span style="color:#0F6E56;font-weight:600">Fax &gt; 0</span> 离开锥顶 ← 前进档安全 ✓<br>
+    <span style="color:#993C1D;font-weight:600">Fax &lt; 0</span> 指向锥顶 ← 前进档危险 ⚠<br>
+    <span style="color:#185FA5;font-weight:600">FRx &gt; 0</span> 背锥方向（背离轴线）<br>
+    <span style="color:#185FA5;font-weight:600">FRx &lt; 0</span> 朝向轴线（异常工况）
+  </div>
+
+  <div class="hr"></div>
+  <button class="btn" onclick="calc()">▶ &nbsp;计算</button>
+</div>
+
+<!-- ===== RIGHT: RESULTS ===== -->
+<div class="card">
+  <div id="ph" class="ph">填写左侧参数，点击「计算」查看结果与力向示意图</div>
+  <div id="res" style="display:none">
+
+    <!-- Row 1: sign + formula -->
+    <div class="sign-fml-grid" style="margin-bottom:13px">
+      <div>
+        <div class="rst">表5-2 取号规则</div>
+        <div id="signBadge"></div>
+        <div class="sr" id="signReason"></div>
+      </div>
+      <div>
+        <div class="rst">代入公式（式5-22 / 5-23）</div>
+        <div class="fml" id="fml"></div>
+      </div>
+    </div>
+
+    <!-- Row 2: diagram -->
+    <div class="rs">
+      <div class="rst">力向示意图 — 主动锥齿轮</div>
+      <div class="dbox">
+        <svg id="diag" width="100%" viewBox="0 0 580 230" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="legend">
+        <div class="leg-item"><div class="dot" style="background:#0F6E56"></div>Fax &gt; 0 离开锥顶（安全）</div>
+        <div class="leg-item"><div class="dot" style="background:#993C1D"></div>Fax &lt; 0 指向锥顶（危险）</div>
+        <div class="leg-item"><div class="dot" style="background:#185FA5"></div>FRx 径向力方向</div>
+        <div class="leg-item"><div class="dot" style="background:#534AB7"></div>旋转方向（大端视角）</div>
+      </div>
+    </div>
+
+    <!-- Row 2.5: cone angles -->
+    <div class="rs">
+      <div class="rst">锥角推导（面锥角 &amp; 根锥角）</div>
+      <div id="coneAngles"></div>
+    </div>
+
+    <!-- Row 3: driver -->
+    <div class="rs">
+      <div class="rst">主动锥齿轮受力结果</div>
+      <div class="fgrid" id="gDrv"></div>
+    </div>
+
+    <!-- Row 4: driven -->
+    <div class="rs">
+      <div class="rst">从动齿轮受力结果 &nbsp;<span id="drivenNote" style="font-weight:400;text-transform:none;letter-spacing:0;color:#888;font-size:15px"></span></div>
+      <div class="fgrid" id="gDrn"></div>
+    </div>
+
+    <!-- Row 5: Ft calc result -->
+    <div class="rs">
+      <div class="rst">齿宽中点圆周力（式5-17 / 5-18）</div>
+      <div id="ftResBox"></div>
+    </div>
+
+    <!-- Row 6: calc breakdown -->
+    <div class="rs">
+      <div class="rst">计算过程</div>
+      <div class="fml" id="steps" style="font-size:16px;line-height:2.1"></div>
+    </div>
+
+  </div><!-- /res -->
+</div><!-- /right card -->
+</div><!-- /layout -->
+
+<div style="text-align:center;font-size:13px;color:#888;padding:14px 0">
+  参考：《汽车设计》第6版 余志生主编 &nbsp;|&nbsp; 表5-2 · 式5-17 · 式5-18 · 式5-22 · 式5-23 &nbsp;|&nbsp; 离线工具，无需联网
+</div>
+</div><!-- /wrap -->
+
+<script>
+var gType='spiral', sp='right', rt='cw';
+
+function setType(t,el){
+  gType=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  var isHyp=t==='hypoid';
+  document.querySelectorAll('.hyp').forEach(function(e){e.classList.toggle('show',isHyp)});
+  var d2=document.getElementById('delta2');
+  var d2lbl=document.getElementById('d2lbl');
+  if(isHyp){
+    d2.removeAttribute('readonly');
+    d2.style.background='';d2.style.color='';
+    d2lbl.textContent='从动轮节锥角 δ₂ (°)';d2lbl.style.color='';
+    d2.oninput=function(){syncGamma2();calcFt();};
+  } else {
+    d2.setAttribute('readonly','');
+    d2lbl.textContent='从动轮 δ₂ = 90°−δ₁';d2lbl.style.color='#0F6E56';
+    d2.oninput=null;
+    syncD2();
+  }
+  calcFt(); /* 类型切换后立即重算，确保 gFt1 使用正确的 β */
+}
+function syncD2(){
+  if(gType!=='spiral')return;
+  var v=parseFloat(document.getElementById('delta1').value)||0;
+  document.getElementById('delta2').value=(90-v).toFixed(1);
+  syncGamma2();
+  calcFt();
+}
+function syncGamma2(){
+  var d2v=parseFloat(document.getElementById('delta2').value)||0;
+  document.getElementById('gamma2').value=d2v.toFixed(1);
+}
+var gFt1=0; /* driving pinion midpoint circumferential force, used by sync button */
+
+function calcFt(){
+  syncGamma2();
+  var T=parseFloat(document.getElementById('torque').value)||0;  /* N·m */
+  var D2=parseFloat(document.getElementById('D2big').value)||0;
+  var b2=parseFloat(document.getElementById('b2face').value)||0;
+  var g2=parseFloat(document.getElementById('delta2').value)||0;
+  var g2r=g2*Math.PI/180;
+  var Dm2=D2-b2*Math.sin(g2r);
+  /* T in N·m, Dm2 in mm → ×1000 to get F in N */
+  var F2=Dm2>0?2*T*1000/Dm2:0;
+
+  var b1deg=parseFloat(document.getElementById('beta1').value)||35;
+  var b2deg=gType==='hypoid'?(parseFloat(document.getElementById('beta2').value)||28):b1deg;
+  var cb1=Math.cos(b1deg*Math.PI/180), cb2=Math.cos(b2deg*Math.PI/180);
+  var F1=cb2>0?F2*(cb1/cb2):F2;
+  gFt1=F1;
+
+  document.getElementById('Dm2out').value=Dm2.toFixed(2);
+
+  /* live cone-angle computation */
+  var d1_deg_live=parseFloat(document.getElementById('delta1').value)||0;
+  var ha1v_l=parseFloat(document.getElementById('ha1').value)||0;
+  var hf2v_l=parseFloat(document.getElementById('hf2').value)||0;
+  var R_live=Math.sin(g2r)>0?D2/(2*Math.sin(g2r)):0;
+  var da1_live=R_live>0?d1_deg_live+Math.atan(ha1v_l/R_live)*180/Math.PI:d1_deg_live;
+  var df2_live=R_live>0?g2-Math.atan(hf2v_l/R_live)*180/Math.PI:g2;
+  document.getElementById('Rout').value=R_live.toFixed(2);
+  document.getElementById('da1out').value=da1_live.toFixed(3);
+  document.getElementById('df2out').value=df2_live.toFixed(3);
+
+  var isHyp=gType==='hypoid';
+  var dispMain=isHyp?
+    'F₂ = '+F2.toFixed(2)+' N（从动）':
+    'F = '+F2.toFixed(2)+' N';
+  document.getElementById('ftVal').textContent=dispMain;
+
+  var subTxt='Dm₂ = '+D2+' − '+b2+'×sin('+g2+'°) = '+Dm2.toFixed(2)+' mm\n'+
+    'F₂ = 2×'+T+'×1000 / '+Dm2.toFixed(2)+' = '+F2.toFixed(2)+' N  （式5-17）';
+  if(isHyp){
+    subTxt+='\nF₁ = F₂×cosβ₁/cosβ₂ = '+F2.toFixed(2)+'×'+cb1.toFixed(4)+'/'+cb2.toFixed(4)+' = '+F1.toFixed(2)+' N（主动）';
+  }
+  document.getElementById('ftSub').textContent=subTxt;
+
+  var syncLbl=isHyp?
+    '↑ 将 F₁ ('+F1.toFixed(2)+' N) 同步为主动轮圆周力 Ft₁':
+    '↑ 将 F ('+F2.toFixed(2)+' N) 同步为主动轮圆周力 Ft₁';
+  document.getElementById('syncBtn').textContent=syncLbl;
+}
+function syncFtToInput(){
+  if(gFt1>0) document.getElementById('ft').value=gFt1.toFixed(2);
+}
+function setSp(s){
+  sp=s;
+  document.getElementById('tL').classList.toggle('on',s==='left');
+  document.getElementById('tR').classList.toggle('on',s==='right');
+}
+function setRot(r){
+  rt=r;
+  document.getElementById('tCW').classList.toggle('on',r==='cw');
+  document.getElementById('tCCW').classList.toggle('on',r==='ccw');
+}
+function getSign(){
+  if(sp==='right'&&rt==='cw')  return -1;
+  if(sp==='right'&&rt==='ccw') return  1;
+  if(sp==='left' &&rt==='cw')  return  1;
+  if(sp==='left' &&rt==='ccw') return -1;
+}
+var tr=function(d){return d*Math.PI/180};
+var fmt=function(v){return (v>=0?'+':'')+v.toFixed(1)};
+var fmt0=function(v){return (v>=0?'+':'')+v.toFixed(2)};
+var fmtDeg=function(r){return (r*180/Math.PI).toFixed(3)};
+
+function calc(){
+  var Ft1=parseFloat(document.getElementById('ft').value)||0;
+  var al=tr(parseFloat(document.getElementById('alpha').value)||20);
+  var b1=tr(parseFloat(document.getElementById('beta1').value)||35);
+  var b2=gType==='hypoid'?tr(parseFloat(document.getElementById('beta2').value)||28):b1;
+
+  /* pitch cone angles */
+  var d1_pitch=tr(parseFloat(document.getElementById('delta1').value)||16);
+  var d2_pitch=tr(parseFloat(document.getElementById('delta2').value)||74);
+  var d1_deg_pitch=parseFloat(document.getElementById('delta1').value)||16;
+  var d2_deg_pitch=parseFloat(document.getElementById('delta2').value)||74;
+
+  /* tooth heights */
+  var ha1v=parseFloat(document.getElementById('ha1').value)||0;
+  var hf2v=parseFloat(document.getElementById('hf2').value)||0;
+  var D2big_c=parseFloat(document.getElementById('D2big').value)||0;
+
+  /* cone distance R = D₂/(2·sinδ₂) */
+  var R_cone=Math.sin(d2_pitch)>0?D2big_c/(2*Math.sin(d2_pitch)):0;
+
+  /* face cone angle for driving pinion: δa₁ = δ₁ + arctan(ha₁/R) */
+  var theta_a1=R_cone>0?Math.atan(ha1v/R_cone):0;
+  var d1=d1_pitch+theta_a1;
+  var d1_deg_face=d1*180/Math.PI;
+
+  /* root cone angle for driven gear: δf₂ = δ₂ − arctan(hf₂/R) */
+  var theta_f2=R_cone>0?Math.atan(hf2v/R_cone):0;
+  var d2=d2_pitch-theta_f2;
+  var d2_deg_root=d2*180/Math.PI;
+
+  var s=getSign();
+
+  /* Driving pinion — using face cone angle δa₁ */
+  var Fax1=Ft1/Math.cos(b1)*(Math.tan(al)*Math.sin(d1)+s*Math.sin(b1)*Math.cos(d1));
+  var FRx1=Ft1/Math.cos(b1)*(Math.tan(al)*Math.cos(d1)-s*Math.sin(b1)*Math.sin(d1));
+
+  /* Driven gear — Ft₂ from torque (pitch cone geometry); forces use root cone δf₂ */
+  var s2=-s;
+  var T_c=parseFloat(document.getElementById('torque').value)||0;
+  var b2face_c=parseFloat(document.getElementById('b2face').value)||0;
+  var Dm2_c=D2big_c-b2face_c*Math.sin(d2_pitch);
+  var Ft2=Dm2_c>0?2*T_c*1000/Dm2_c:Ft1;
+  var Fay2=Ft2/Math.cos(b2)*(Math.tan(al)*Math.sin(d2)+s2*Math.sin(b2)*Math.cos(d2));
+  var FRy2=Ft2/Math.cos(b2)*(Math.tan(al)*Math.cos(d2)-s2*Math.sin(b2)*Math.sin(d2));
+
+  /* trig for steps */
+  var ta=Math.tan(al),sb1=Math.sin(b1),cb1=Math.cos(b1);
+  var sd1=Math.sin(d1),cd1=Math.cos(d1);
+  var sb2=Math.sin(b2),cb2=Math.cos(b2);
+  var sd2=Math.sin(d2),cd2=Math.cos(d2);
+
+  /* Show */
+  document.getElementById('ph').style.display='none';
+  document.getElementById('res').style.display='block';
+
+  var sLbl=s>0?'＋ 加号':'－ 减号';
+  var sCls=s>0?'p':'m';
+  var sC=s>0?'+':'−';
+  var sCFR=s>0?'−':'+';
+  var spTx=sp==='right'?'右旋':'左旋';
+  var rtTx=rt==='cw'?'顺时针 ↻':'逆时针 ↺';
+
+  document.getElementById('signBadge').innerHTML=
+    '<div class="sign-box '+sCls+'">'+sLbl+'</div>';
+  document.getElementById('signReason').innerHTML=
+    spTx+' &times; '+rtTx+'<br>（从大端看）<br>→ 取 <b>'+sLbl+'</b>';
+
+  document.getElementById('fml').textContent=
+    'Fax = Ft/cosβ · (tanα·sinδ '+sC+' sinβ·cosδ)\n'+
+    'FRx = Ft/cosβ · (tanα·cosδ '+sCFR+' sinβ·sinδ)\n'+
+    '主动轮 δ → 面锥角 δa₁；从动轮 δ → 根锥角 δf₂';
+
+  /* ── Cone angle result cards ── */
+  document.getElementById('coneAngles').innerHTML=
+    '<div class="cone-grid">'+
+    '<div class="fc z"><div class="fn">节锥距 R</div>'+
+    '<div class="fv z" style="font-size:20px">'+R_cone.toFixed(2)+' mm</div>'+
+    '<div class="fd z">= D₂/(2sinδ₂)<br>= '+D2big_c+'/(2×sin'+d2_deg_pitch.toFixed(1)+'°)</div></div>'+
+    '<div class="fc" style="background:#fff4e0;border:1px solid #d4944a;border-radius:8px;padding:14px 16px">'+
+    '<div class="fn" style="color:#8a4a00">θa₁ = arctan(ha₁/R)</div>'+
+    '<div class="fv" style="color:#8a4a00;font-size:20px">'+fmtDeg(theta_a1)+'°</div>'+
+    '<div class="fd" style="color:#8a4a00">arctan('+ha1v+' / '+R_cone.toFixed(2)+')</div></div>'+
+    '<div class="fc" style="background:#fff4e0;border:1px solid #d4944a;border-radius:8px;padding:14px 16px">'+
+    '<div class="fn" style="color:#8a4a00">主动轮面锥角 δa₁</div>'+
+    '<div class="fv" style="color:#8a4a00;font-size:20px">'+d1_deg_face.toFixed(3)+'°</div>'+
+    '<div class="fd" style="color:#8a4a00">= δ₁('+d1_deg_pitch.toFixed(1)+'°) + θa₁</div></div>'+
+    '<div class="fc" style="background:#f5e0ff;border:1px solid #a055c0;border-radius:8px;padding:14px 16px">'+
+    '<div class="fn" style="color:#5a006e">从动轮根锥角 δf₂</div>'+
+    '<div class="fv" style="color:#5a006e;font-size:20px">'+d2_deg_root.toFixed(3)+'°</div>'+
+    '<div class="fd" style="color:#5a006e">= δ₂('+d2_deg_pitch.toFixed(1)+'°) − arctan(hf₂/R)</div></div>'+
+    '</div>';
+
+  /* ── Force cards driver ── */
+  renderCards('gDrv',[
+    {n:'Fax₁（轴向力）式5-22',v:Fax1,
+     pd:'离开锥顶 ✓ 安全',nd:'指向锥顶 ⚠ 危险'},
+    {n:'FRx₁（径向力）式5-23',v:FRx1,
+     pd:'背锥方向（背离轴线）',nd:'朝向轴线'}
+  ]);
+
+  /* ── Force cards driven ── */
+  var dnote=gType==='hypoid'?'β₂独立取值；Ft₂ = 2T/Dm₂（式5-17）':'δ₂=90°−δ₁；Ft₂ = 2T/Dm₂（式5-17）';
+  document.getElementById('drivenNote').textContent=dnote;
+  renderCards('gDrn',[
+    {n:'Fay₂（轴向力）',v:Fay2,pd:'离开锥顶',nd:'指向锥顶'},
+    {n:'FRy₂（径向力）',v:FRy2,pd:'背锥方向',nd:'朝向轴线'}
+  ]);
+
+  /* ── Ft calc result box ── */
+  var T=parseFloat(document.getElementById('torque').value)||0;
+  var D2big=parseFloat(document.getElementById('D2big').value)||0;
+  var b2face=parseFloat(document.getElementById('b2face').value)||0;
+  var g2deg=parseFloat(document.getElementById('delta2').value)||0;
+  var g2r=g2deg*Math.PI/180;
+  var Dm2=D2big-b2face*Math.sin(g2r);
+  var Fmid=Dm2>0?2*T*1000/Dm2:0;
+  var b1deg=parseFloat(document.getElementById('beta1').value)||35;
+  var b2deg=gType==='hypoid'?(parseFloat(document.getElementById('beta2').value)||28):b1deg;
+  var cb1r=Math.cos(b1deg*Math.PI/180),cb2r=Math.cos(b2deg*Math.PI/180);
+  var Ft1mid=gType==='hypoid'?Fmid*(cb1r/cb2r):Fmid;
+  var isHyp=gType==='hypoid';
+  var ratioHtml=isHyp?
+    '<div class="ratio-box" style="margin-top:8px">'+
+    '<b>双曲面齿轮：F₁ ≠ F₂（β₁ ≠ β₂）</b><br>'+
+    'F₁ / F₂ = cosβ₁ / cosβ₂<br>'+
+    '= cos'+b1deg+'° / cos'+b2deg+'° = '+cb1r.toFixed(4)+' / '+cb2r.toFixed(4)+' = '+(cb1r/cb2r).toFixed(4)+'<br>'+
+    '→ F₂（从动）= <b>'+Fmid.toFixed(2)+' N</b>，F₁（主动）= <b>'+Ft1mid.toFixed(2)+' N</b>'+
+    '</div>':
+    '<div class="ratio-box" style="margin-top:8px">'+
+    '<b>弧齿锥齿轮：F₁ = F₂（β₁ = β₂）</b><br>'+
+    'F₁ / F₂ = cosβ₁ / cosβ₂ = 1，主从动轮圆周力相等<br>'+
+    '→ F₁ = F₂ = <b>'+Fmid.toFixed(2)+' N</b>'+
+    '</div>';
+  document.getElementById('ftResBox').innerHTML=
+    '<div class="ft-res-grid">'+
+    '<div class="fc z"><div class="fn">Dm₂（式5-18）</div>'+
+    '<div class="fv z">'+Dm2.toFixed(2)+' mm</div>'+
+    '<div class="fd z">= D₂ − b₂·sinδ₂<br>= '+D2big+' − '+b2face+'×sin'+g2deg.toFixed(1)+'°</div></div>'+
+    '<div class="fc z"><div class="fn">F₂ 从动轮（式5-17）</div>'+
+    '<div class="fv z">'+Fmid.toFixed(2)+' N</div>'+
+    '<div class="fd z">= 2T×1000 / Dm₂<br>= 2×'+T+'×1000 / '+Dm2.toFixed(2)+'</div></div>'+
+    '<div class="fc z"><div class="fn">F₁ 主动轮</div>'+
+    '<div class="fv z">'+Ft1mid.toFixed(2)+' N</div>'+
+    '<div class="fd z">= F₂×cosβ₁/cosβ₂<br>'+(isHyp?'双曲面：β₁≠β₂':'弧齿：β₁=β₂')+'</div></div>'+
+    '</div>'+ratioHtml;
+
+  /* ── Steps ── */
+  var s2c =s2>0?' + ':' - ';
+  var s2cFR=s2>0?' - ':' + ';
+  var stepHtml=
+    '─── 锥角推导 ───\n'+
+    'R = D₂ / (2·sinδ₂)\n'+
+    '  = '+D2big_c+' / (2×sin'+d2_deg_pitch.toFixed(1)+'°)\n'+
+    '  = '+D2big_c+' / (2×'+Math.sin(d2_pitch).toFixed(4)+')\n'+
+    '  = '+R_cone.toFixed(2)+' mm\n\n'+
+    '主动轮面锥角：\n'+
+    '  θa₁ = arctan(ha₁/R) = arctan('+ha1v+' / '+R_cone.toFixed(2)+')\n'+
+    '       = '+fmtDeg(theta_a1)+'°\n'+
+    '  δa₁ = δ₁ + θa₁\n'+
+    '       = '+d1_deg_pitch.toFixed(3)+'° + '+fmtDeg(theta_a1)+'°\n'+
+    '       = '+d1_deg_face.toFixed(3)+'°\n\n'+
+    '从动轮根锥角：\n'+
+    '  θf₂ = arctan(hf₂/R) = arctan('+hf2v+' / '+R_cone.toFixed(2)+')\n'+
+    '       = '+fmtDeg(theta_f2)+'°\n'+
+    '  δf₂ = δ₂ − θf₂\n'+
+    '       = '+d2_deg_pitch.toFixed(3)+'° − '+fmtDeg(theta_f2)+'°\n'+
+    '       = '+d2_deg_root.toFixed(3)+'°\n\n'+
+    '─── 主动锥齿轮（driving pinion）δ → δa₁ = '+d1_deg_face.toFixed(3)+'° ───\n'+
+    'trig values:\n'+
+    '  cos β₁ = '+cb1.toFixed(4)+'  sin β₁ = '+sb1.toFixed(4)+'  tan α = '+ta.toFixed(4)+'\n'+
+    '  sin δa₁ = '+sd1.toFixed(4)+'  cos δa₁ = '+cd1.toFixed(4)+'\n\n'+
+    'Fax₁ = Ft₁/cosβ₁ × (tanα·sinδa₁ '+(s>0?' + ':' - ')+'sinβ₁·cosδa₁)\n'+
+    '     = '+Ft1+' / '+cb1.toFixed(4)+' × ('+ta.toFixed(4)+'×'+sd1.toFixed(4)+
+      (s>0?' + ':' - ')+sb1.toFixed(4)+'×'+cd1.toFixed(4)+')\n'+
+    '     = '+(Ft1/cb1).toFixed(1)+' × ('+(ta*sd1).toFixed(4)+(s>0?' + ':' - ')+
+      (sb1*cd1).toFixed(4)+')\n'+
+    '     = '+(Ft1/cb1).toFixed(1)+' × '+(ta*sd1+s*sb1*cd1).toFixed(4)+'\n'+
+    '     = '+fmt0(Fax1)+' N\n\n'+
+    'FRx₁ = Ft₁/cosβ₁ × (tanα·cosδa₁ '+(s>0?' - ':' + ')+'sinβ₁·sinδa₁)\n'+
+    '     = '+Ft1+' / '+cb1.toFixed(4)+' × ('+ta.toFixed(4)+'×'+cd1.toFixed(4)+
+      (s>0?' - ':' + ')+sb1.toFixed(4)+'×'+sd1.toFixed(4)+')\n'+
+    '     = '+(Ft1/cb1).toFixed(1)+' × '+(ta*cd1-s*sb1*sd1).toFixed(4)+'\n'+
+    '     = '+fmt0(FRx1)+' N\n\n'+
+    '─── 从动锥齿轮（driven gear）δ → δf₂ = '+d2_deg_root.toFixed(3)+'° ───\n'+
+    'trig values:\n'+
+    '  cos β₂ = '+cb2.toFixed(4)+'  sin β₂ = '+sb2.toFixed(4)+'  tan α = '+ta.toFixed(4)+'\n'+
+    '  sin δf₂ = '+sd2.toFixed(4)+'  cos δf₂ = '+cd2.toFixed(4)+'\n'+
+    '  取号符 s₂ = −s₁ = '+(s2>0?'+1（加号）':'−1（减号）')+'\n\n'+
+    'Ft₂（式5-17/5-18）:\n'+
+    '  Dm₂ = D₂ − b₂·sinδ₂（节锥角）\n'+
+    '       = '+D2big_c+' − '+b2face_c+'×'+Math.sin(d2_pitch).toFixed(4)+'\n'+
+    '       = '+Dm2_c.toFixed(2)+' mm\n'+
+    '  Ft₂  = 2T×1000 / Dm₂\n'+
+    '       = 2×'+T_c+'×1000 / '+Dm2_c.toFixed(2)+'\n'+
+    '       = '+Ft2.toFixed(2)+' N\n\n'+
+    'Fax₂ = Ft₂/cosβ₂ × (tanα·sinδf₂ '+s2c+'sinβ₂·cosδf₂)\n'+
+    '     = '+Ft2.toFixed(2)+' / '+cb2.toFixed(4)+' × ('+ta.toFixed(4)+'×'+sd2.toFixed(4)+
+      s2c+sb2.toFixed(4)+'×'+cd2.toFixed(4)+')\n'+
+    '     = '+(Ft2/cb2).toFixed(1)+' × ('+(ta*sd2).toFixed(4)+s2c+
+      (sb2*cd2).toFixed(4)+')\n'+
+    '     = '+(Ft2/cb2).toFixed(1)+' × '+(ta*sd2+s2*sb2*cd2).toFixed(4)+'\n'+
+    '     = '+fmt0(Fay2)+' N\n\n'+
+    'FRx₂ = Ft₂/cosβ₂ × (tanα·cosδf₂ '+s2cFR+'sinβ₂·sinδf₂)\n'+
+    '     = '+Ft2.toFixed(2)+' / '+cb2.toFixed(4)+' × ('+ta.toFixed(4)+'×'+cd2.toFixed(4)+
+      s2cFR+sb2.toFixed(4)+'×'+sd2.toFixed(4)+')\n'+
+    '     = '+(Ft2/cb2).toFixed(1)+' × '+(ta*cd2-s2*sb2*sd2).toFixed(4)+'\n'+
+    '     = '+fmt0(FRy2)+' N';
+  document.getElementById('steps').textContent=stepHtml;
+
+  drawDiag(Fax1,FRx1,rt,sp,d1_deg_face);
+}
+
+function renderCards(id,arr){
+  var el=document.getElementById(id);
+  el.innerHTML=arr.map(function(f){
+    var v=f.v;
+    var cls=Math.abs(v)<0.005?'z':(v>0?'p':'m');
+    var desc=Math.abs(v)<0.005?'≈ 0':(v>0?f.pd:f.nd);
+    return '<div class="fc '+cls+'">'+
+      '<div class="fn">'+f.n+'</div>'+
+      '<div class="fv '+cls+'">'+(v>=0?'+':'')+v.toFixed(2)+' N</div>'+
+      '<div class="fd '+cls+'">'+desc+'</div>'+
+      '</div>';
+  }).join('');
+}
+
+function drawDiag(Fax,FRx,rotDir,spiralDir,d1deg){
+  var svg=document.getElementById('diag');
+  var axY=115, apX=445, lgX=120, lgHY=72;
+  var cG='#0F6E56',cR='#993C1D',cB='#185FA5',cP='#534AB7',cGr='#888780';
+
+  function mkArrow(id,col){
+    return '<marker id="'+id+'" viewBox="0 0 10 10" refX="8" refY="5" '+
+      'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'+
+      '<path d="M2 1L8 5L2 9" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linecap="round"/></marker>';
+  }
+
+  var h='<defs>'+mkArrow('aG',cG)+mkArrow('aR',cR)+mkArrow('aB',cB)+
+    mkArrow('aP',cP)+mkArrow('aGr',cGr)+'</defs>';
+
+  /* Cone body */
+  h+='<polygon points="'+lgX+','+(axY-lgHY)+' '+apX+','+axY+' '+lgX+','+(axY+lgHY)+'" '+
+    'fill="#ededea" stroke="none"/>';
+  h+='<line x1="'+lgX+'" y1="'+(axY-lgHY)+'" x2="'+apX+'" y2="'+axY+'" stroke="#aaa" stroke-width="1"/>';
+  h+='<line x1="'+lgX+'" y1="'+(axY+lgHY)+'" x2="'+apX+'" y2="'+axY+'" stroke="#aaa" stroke-width="1"/>';
+  /* large-end face */
+  h+='<ellipse cx="'+lgX+'" cy="'+axY+'" rx="7" ry="'+lgHY+'" fill="#e8e8e4" stroke="#aaa" stroke-width="1"/>';
+  /* shaft axis */
+  h+='<line x1="55" y1="'+axY+'" x2="'+(apX+50)+'" y2="'+axY+'" stroke="'+cGr+'" stroke-width="0.5" stroke-dasharray="4 3"/>';
+  /* apex */
+  h+='<circle cx="'+apX+'" cy="'+axY+'" r="4" fill="'+cGr+'"/>';
+  h+='<text x="'+(apX+9)+'" y="'+(axY+4)+'" font-size="13" fill="'+cGr+'" font-family="sans-serif">锥顶</text>';
+  h+='<text x="'+lgX+'" y="'+(axY-lgHY-10)+'" font-size="13" fill="'+cGr+'" font-family="sans-serif" text-anchor="middle">大端</text>';
+
+  /* cone angle label */
+  h+='<text x="'+(lgX+50)+'" y="'+(axY-lgHY+12)+'" font-size="12" fill="#888" font-family="sans-serif">δ₁='+d1deg.toFixed(1)+'°</text>';
+
+  /* midcone reference */
+  var midX=(lgX+apX)/2+15;
+  var midTopY=axY-lgHY*(apX-midX)/(apX-lgX);
+
+  /* ---- Fax arrow ---- */
+  var faxLen=Math.max(20,Math.min(Math.abs(Fax)/80,100));
+  var fCol=Fax>=0?cG:cR, fMk=Fax>=0?'aG':'aR';
+  /* positive Fax = away from apex = toward large end = LEFT */
+  var fEndX=Fax>=0?(midX-faxLen):(midX+faxLen);
+  h+='<line x1="'+midX+'" y1="'+axY+'" x2="'+fEndX+'" y2="'+axY+'" '+
+    'stroke="'+fCol+'" stroke-width="3" marker-end="url(#'+fMk+')"/>';
+  var fLX=(midX+fEndX)/2;
+  h+='<text x="'+fLX+'" y="'+(axY-10)+'" font-size="14" fill="'+fCol+'" font-weight="700" '+
+    'text-anchor="middle" font-family="sans-serif">Fax</text>';
+  h+='<text x="'+fLX+'" y="'+(axY+20)+'" font-size="13" fill="'+fCol+'" '+
+    'text-anchor="middle" font-family="sans-serif">'+(Fax>=0?'+':'')+Math.round(Fax)+' N</text>';
+  h+='<text x="'+fLX+'" y="'+(axY+36)+'" font-size="12" fill="'+fCol+'" '+
+    'text-anchor="middle" font-family="sans-serif">'+(Fax>=0?'← 离开锥顶 ✓':'→ 指向锥顶 ⚠')+'</text>';
+
+  /* ---- FRx arrow ---- */
+  var frLen=Math.max(20,Math.min(Math.abs(FRx)/80,65));
+  var frX=midX+35, frY=midTopY-4;
+  var frCol=FRx>=0?cB:'#A32D2D', frMk=FRx>=0?'aB':'aR';
+  var frEndY=FRx>=0?(frY-frLen):(frY+frLen);
+  h+='<line x1="'+frX+'" y1="'+frY+'" x2="'+frX+'" y2="'+frEndY+'" '+
+    'stroke="'+frCol+'" stroke-width="3" marker-end="url(#'+frMk+')"/>';
+  var frMidY=(frY+frEndY)/2;
+  h+='<text x="'+(frX+9)+'" y="'+(frMidY-2)+'" font-size="14" fill="'+frCol+'" font-weight="700" font-family="sans-serif">FRx</text>';
+  h+='<text x="'+(frX+9)+'" y="'+(frMidY+14)+'" font-size="12" fill="'+frCol+'" font-family="sans-serif">'+(FRx>=0?'+':'')+Math.round(FRx)+' N</text>';
+  h+='<text x="'+(frX+9)+'" y="'+(frMidY+28)+'" font-size="12" fill="'+frCol+'" font-family="sans-serif">'+(FRx>=0?'↑背锥方向':'↓朝向轴线')+'</text>';
+
+  /* ---- Rotation arc at large end ---- */
+  var arcX=lgX-32, arcY=axY, arcR=26;
+  if(rotDir==='cw'){
+    /* clockwise: arc from top sweeping right */
+    h+='<path d="M '+arcX+' '+(arcY-arcR)+' A '+arcR+' '+arcR+' 0 1 1 '+(arcX-arcR+2)+' '+(arcY+6)+'" '+
+      'fill="none" stroke="'+cP+'" stroke-width="1.5" marker-end="url(#aP)"/>';
+    h+='<text x="'+arcX+'" y="'+(arcY-arcR-8)+'" font-size="12" fill="'+cP+'" text-anchor="middle" font-family="sans-serif">↻顺时针</text>';
+  } else {
+    h+='<path d="M '+(arcX-arcR+2)+' '+(arcY-5)+' A '+arcR+' '+arcR+' 0 1 0 '+arcX+' '+(arcY-arcR)+'" '+
+      'fill="none" stroke="'+cP+'" stroke-width="1.5" marker-end="url(#aP)"/>';
+    h+='<text x="'+arcX+'" y="'+(arcY-arcR-8)+'" font-size="12" fill="'+cP+'" text-anchor="middle" font-family="sans-serif">↺逆时针</text>';
+  }
+  h+='<text x="'+arcX+'" y="'+(arcY+arcR+16)+'" font-size="11" fill="'+cGr+'" text-anchor="middle" font-family="sans-serif">从大端看</text>';
+
+  /* spiral dir label */
+  var slx=(lgX+apX)/2;
+  h+='<text x="'+slx+'" y="'+(axY+lgHY*0.55+18)+'" font-size="13" fill="#555" '+
+    'text-anchor="middle" font-family="sans-serif">'+(spiralDir==='right'?'右旋（右手定则）':'左旋（左手定则）')+'</text>';
+
+  /* right-hand rule reminder */
+  h+='<text x="478" y="30" font-size="12" fill="#888" font-family="sans-serif">右手定则验证：</text>';
+  h+='<text x="478" y="46" font-size="12" fill="'+cG+'" font-family="sans-serif">拇指→大端 = 安全 ✓</text>';
+  h+='<text x="478" y="62" font-size="12" fill="'+cR+'" font-family="sans-serif">拇指→锥顶 = 危险 ⚠</text>';
+
+  svg.innerHTML=h;
+}
+
+syncD2();
+calcFt();
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+if (e.key === 'F12' || 
+(e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+(e.ctrlKey && e.key === 'U') ||
+(e.ctrlKey && e.key === 'S')) {
+e.preventDefault();
+return false;
+}
+});
+
+</script>
+<script>
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+        (e.ctrlKey && e.key === 'U') ||
+        (e.ctrlKey && e.key === 'S')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+</script>
+
+</body>
+</html>
